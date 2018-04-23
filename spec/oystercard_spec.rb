@@ -17,14 +17,7 @@ describe Oystercard do
       expect { subject.top_up(1) }.to raise_error("Max balance is #{Oystercard::MAXIMUM_BALANCE}")
     end
   end
-
-  context '#deduct' do
-    it "reduces balance by specified amount" do
-      subject.top_up(50)
-      expect { subject.deduct(10) }.to change { subject.balance }.by -10
-    end
-  end
-
+  
   context "#in_journey" do
     it "returns value of in_use attribute" do
       expect(subject).not_to be_in_journey
@@ -45,9 +38,40 @@ describe Oystercard do
   end
 
   context '#touch_in' do
-
     it "raises an error when balance is less than £1" do
       expect { subject.touch_in }.to raise_error("Insufficient funds")
     end
   end
+
+  context '#touch_out' do
+    it "deducts minimum fare from balance upon touching out" do
+      subject.top_up(5)
+      subject.touch_in
+      expect { subject.touch_out }.to change{ subject.balance }.by -1
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 end
