@@ -1,6 +1,8 @@
 require 'oystercard.rb'
 
 describe Oystercard do
+  let(:station) { double "Station" }
+
   it "has an initial balance of 0 check" do
     expect(subject.balance).to eq 0
   end
@@ -24,65 +26,45 @@ describe Oystercard do
     end
 
 
-    xit "sets in_journey to true when touching in" do
+    it "sets in_journey to true when touching in" do
       subject.top_up(Oystercard::MINIMUM_FARE)
-      subject.touch_in
+      subject.touch_in(station)
       expect(subject).to be_in_journey
     end
 
-    xit "set in_journey to false when touching out" do
+    it "set in_journey to false when touching out" do
       subject.top_up(Oystercard::MINIMUM_FARE)
-      subject.touch_in
+      subject.touch_in(station)
       subject.touch_out
       expect(subject).not_to be_in_journey
     end
   end
 
   context '#touch_in' do
-    xit "raises an error when balance is less than £1" do
-      expect { subject.touch_in }.to raise_error("Insufficient funds")
+    it "raises an error when balance is less than £1" do
+      expect { subject.touch_in(station) }.to raise_error("Insufficient funds")
     end
 
     it "stores the value of the station where you touch in" do
-      station_name = "Waterloo"
       subject.top_up(Oystercard::MINIMUM_FARE)
-      subject.touch_in(station_name)
-      expect(subject.station).to eq station_name
+      subject.touch_in(station)
+      expect(subject.station).to eq station
     end
-
-
-
   end
 
   context '#touch_out' do
-    xit "deducts minimum fare from balance upon touching out" do
+    it "deducts minimum fare from balance upon touching out" do
       subject.top_up(5)
-      subject.touch_in
+      subject.touch_in(station)
       expect { subject.touch_out }.to change{ subject.balance }.by -1
     end
+
+    it "Sets station attribute to nil" do
+      subject.top_up(5)
+      subject.touch_in(station)
+      subject.touch_out
+      expect(subject.station).to eq nil
+    end
   end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 end
