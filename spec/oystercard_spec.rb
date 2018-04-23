@@ -24,4 +24,21 @@ describe Oystercard do
       expect { subject.deduct(10) }.to change { subject.balance }.by -10
     end
   end
+
+  context "#in_journey" do
+    it "returns value of in_use attribute" do
+      expect(subject).not_to be_in_journey
+    end
+
+    it "sets in_journey to true when touching in" do
+      subject.touch_in
+      expect(subject).to be_in_journey
+    end
+
+    it "set in_journey to false when touching out" do
+      subject.touch_in
+      subject.touch_out
+      expect(subject).not_to be_in_journey
+    end
+  end
 end
