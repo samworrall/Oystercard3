@@ -1,19 +1,19 @@
 class Journey
 
   def initialize
-    @status
+    @status = nil
   end
 
-  def complete?
+  def on_journey?
     @status
   end
 
   def start_journey
-    @status = false
+    @status = true
   end
 
   def end_journey
-    @status = true
+    @status = false
   end
 
 end

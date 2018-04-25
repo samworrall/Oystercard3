@@ -1,8 +1,11 @@
 require 'oystercard.rb'
+require 'journey.rb'
 
 describe Oystercard do
   let(:station) { double "Station" }
   let(:station_2) { double "Station_2"}
+  # let(:journey) { double "journey", start_journey: true, end_journey: false, on_journey?: var }
+  # let(:var) {false}
 
   it "has an initial balance of 0 check" do
     expect(subject.balance).to eq 0
@@ -21,8 +24,8 @@ describe Oystercard do
     end
   end
 
-  context "#in_journey" do
-    it "returns value of in_use attribute" do
+  context "#in_journey", :ij do
+    it "returns false" do
       expect(subject).not_to be_in_journey
     end
 
@@ -92,5 +95,11 @@ describe Oystercard do
       expect(subject.journey_log[1]).to be_nil
     end
   end
+
+    describe '#current_journey' do
+      it 'returns current journey' do
+        expect(subject.current_journey).to eq 'journey'
+      end
+    end
 
 end
