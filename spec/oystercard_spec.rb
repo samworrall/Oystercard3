@@ -1,11 +1,11 @@
 require 'oystercard.rb'
-require 'journey.rb'
 
 describe Oystercard do
   let(:station) { double "Station" }
   let(:station_2) { double "Station_2"}
-  # let(:journey) { double "journey", start_journey: true, end_journey: false, on_journey?: var }
-  # let(:var) {false}
+  let(:journey) { double "journey", start_journey: nil, end_journey: nil, on_journey?: var }
+  let(:var) {false}
+  subject { Oystercard.new(journey) }
 
   it "has an initial balance of 0 check" do
     expect(subject.balance).to eq 0
@@ -24,16 +24,9 @@ describe Oystercard do
     end
   end
 
-  context "#in_journey", :ij do
+  context "#in_journey" do
     it "returns false" do
       expect(subject).not_to be_in_journey
-    end
-
-
-    it "sets in_journey to true when touching in" do
-      subject.top_up(Oystercard::MINIMUM_FARE)
-      subject.touch_in(station)
-      expect(subject).to be_in_journey
     end
 
     it "set in_journey to false when touching out" do
@@ -43,6 +36,15 @@ describe Oystercard do
       expect(subject).not_to be_in_journey
     end
   end
+
+    context 'whilst on a journey' do
+      let(:var) {true}
+      it "sets in_journey to true when touching in" do
+        subject.top_up(Oystercard::MINIMUM_FARE)
+        subject.touch_in(station)
+        expect(subject).to be_in_journey
+      end
+    end
 
   context '#touch_in' do
     it "raises an error when balance is less than £1" do
@@ -98,7 +100,7 @@ describe Oystercard do
 
     describe '#current_journey' do
       it 'returns current journey' do
-        expect(subject.current_journey).to eq 'journey'
+        expect(subject.current_journey).to eq journey
       end
     end
 
