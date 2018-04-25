@@ -18,7 +18,7 @@ describe Journey do
     end
   end
 
-  describe '#end_journey', :ej do
+  describe '#end_journey' do
     it 'Sets status to false when journey ends' do
       subject.start_journey
       subject.end_journey
@@ -32,14 +32,14 @@ describe Journey do
     context 'Entry station is equal to nil' do
       subject { Journey.new( nil, exit_station) }
       it 'Charges penalty fare for journey without start' do
-        expect(subject.fare).to eq(6)
+        expect(subject.fare).to eq(Journey::PENALTY_FARE)
       end
     end
 
     context 'Exit station is equal to nil' do
       subject { Journey.new( entry_station, nil) }
         it 'Charges penalty fare for journey without end' do
-        expect(subject.fare).to eq (6)
+        expect(subject.fare).to eq (Journey::PENALTY_FARE)
         end
       end
     end
