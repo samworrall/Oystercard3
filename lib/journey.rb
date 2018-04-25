@@ -12,4 +12,8 @@ class Journey
     @status = false
   end
 
+  def end_journey
+    @status = true
+  end
+
 end

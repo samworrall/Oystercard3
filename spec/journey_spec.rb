@@ -9,9 +9,17 @@ describe Journey do
   end
 
   context '#start_journey' do
-    it "sets complete to false when journey starts" do
+    it "sets status to false when journey starts" do
       subject.start_journey
       expect(subject.complete?).to eq(false)
+    end
+  end
+
+  context '#end_journey' do
+    it "sets status to true when journey ends" do
+      subject.start_journey
+      subject.end_journey
+      expect(subject.complete?).to eq(true)
     end
   end
 end
