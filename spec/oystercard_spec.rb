@@ -2,6 +2,7 @@ require 'oystercard.rb'
 
 describe Oystercard do
   let(:station) { double "Station" }
+  let(:station_2) { double "Station_2"}
 
   it "has an initial balance of 0 check" do
     expect(subject.balance).to eq 0
@@ -35,7 +36,7 @@ describe Oystercard do
     it "set in_journey to false when touching out" do
       subject.top_up(Oystercard::MINIMUM_FARE)
       subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(station_2)
       expect(subject).not_to be_in_journey
     end
   end
@@ -56,14 +57,21 @@ describe Oystercard do
     it "deducts minimum fare from balance upon touching out" do
       subject.top_up(5)
       subject.touch_in(station)
-      expect { subject.touch_out }.to change{ subject.balance }.by -1
+      expect { subject.touch_out(station_2) }.to change{ subject.balance }.by -1
     end
 
     it "Sets station attribute to nil" do
       subject.top_up(5)
       subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(station_2)
       expect(subject.station).to eq nil
+    end
+
+    it "Records touch out station" do
+      subject.top_up(5)
+      subject.touch_in(station)
+      subject.touch_out(station_2)
+      expect(subject.station_2). to eq station_2
     end
   end
 
