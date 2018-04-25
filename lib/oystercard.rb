@@ -1,18 +1,14 @@
 require'journey'
 
 class Oystercard
-
   attr_reader :balance, :station, :station_2, :journey_log, :current_journey
-
   MAXIMUM_BALANCE = 90
   MINIMUM_FARE = 1
-
 
   def initialize(current_journey = Journey.new)
     @balance = 0
     @journey_log = []
     @current_journey = current_journey
-
   end
 
   def top_up(amount)

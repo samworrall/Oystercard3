@@ -3,8 +3,8 @@ require 'station'
 describe Station do
 
   describe '#name' do
-    subject {Station.new('Baker Street', 1)}
-    it 'returns the station name' do
+    subject { Station.new('Baker Street', 1) }
+    it 'Returns the station name' do
       expect(subject.name).to eq('Baker Street')
     end
   end
