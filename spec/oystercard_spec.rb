@@ -76,6 +76,7 @@ describe Oystercard do
       subject.touch_out(station_2)
       expect(subject.station_2).to eq station_2
     end
+
   end
 
   context '#journey log' do
