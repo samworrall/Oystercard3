@@ -54,24 +54,42 @@ describe Oystercard do
   end
 
   context '#touch_out' do
+    before { subject.top_up(Oystercard::MINIMUM_FARE) }
     it "deducts minimum fare from balance upon touching out" do
-      subject.top_up(5)
       subject.touch_in(station)
       expect { subject.touch_out(station_2) }.to change{ subject.balance }.by -1
     end
 
     it "Sets station attribute to nil" do
-      subject.top_up(5)
       subject.touch_in(station)
       subject.touch_out(station_2)
       expect(subject.station).to eq nil
     end
 
     it "Records touch out station" do
-      subject.top_up(5)
       subject.touch_in(station)
       subject.touch_out(station_2)
-      expect(subject.station_2). to eq station_2
+      expect(subject.station_2).to eq station_2
+    end
+  end
+
+  context '#journey log' do
+    before { subject.top_up(Oystercard::MINIMUM_FARE) }
+
+    it "Checks that log is empty be default" do
+      expect(subject.journey_log).to be_empty
+    end
+
+    it "stores a list of completed journeys" do
+      subject.touch_in(station)
+      subject.touch_out(station_2)
+      expect(subject.journey_log[0][station]).to eq station_2
+    end
+
+    it "checks that touching in and out once creates (only) one journey" do
+      subject.touch_in(station)
+      subject.touch_out(station_2)
+      expect(subject.journey_log[1]).to be_nil
     end
   end
 
