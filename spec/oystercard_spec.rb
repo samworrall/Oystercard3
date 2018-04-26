@@ -46,15 +46,21 @@ describe Oystercard do
       end
     end
 
-  describe '#touch_in' do
+  describe '#touch_in', :ti do
     it 'Raises an error when balance is less than £1' do
       expect { subject.touch_in(station) }.to raise_error("Insufficient funds")
     end
 
-    it 'Stores the value of the station where you touch in' do
+    xit 'Stores the value of the station where you touch in' do
       subject.top_up(Oystercard::MINIMUM_FARE)
       subject.touch_in(station)
       expect(subject.station).to eq station
+    end
+
+    it 'Deducts penalty fare if touching in twice' do
+      subject.top_up(Oystercard::MAXIMUM_BALANCE)
+      subject.touch_in(station)
+      expect { subject.touch_in(station) }.to change { subject.balance }.by -6
     end
   end
 
@@ -62,7 +68,7 @@ describe Oystercard do
     before { subject.top_up(Oystercard::MINIMUM_FARE) }
     it 'Deducts minimum fare from balance upon touching out' do
       subject.touch_in(station)
-      expect { subject.touch_out(station_2) }.to change{ subject.balance }.by -1
+      expect { subject.touch_out(station_2) }.to change { subject.balance }.by -Oystercard::MINIMUM_FARE
     end
 
     it 'Sets station attribute to nil' do

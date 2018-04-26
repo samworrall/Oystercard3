@@ -15,13 +15,13 @@ class Oystercard
   end
 
   def in_journey?
-    @current_journey.on_journey?
+    @current_journey.on_journey? #refactor later
   end
 
-  def touch_in(station)
+  def touch_in(entry_station)
     fail "Insufficient funds" if @balance < MINIMUM_FARE
-    @current_journey.start_journey
-    @station = station
+    deduct(6) if in_journey?
+    @current_journey.start_journey(entry_station)
   end
 
   def touch_out(station_2)
