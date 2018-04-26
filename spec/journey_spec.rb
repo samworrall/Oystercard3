@@ -1,20 +1,10 @@
 require 'journey.rb'
 
-describe Journey do
+describe Journey, :j do
   let(:station) { double :station, name: :name, zone: :zone }
 
-  describe '#on_journey?' do
-    it 'Returns nil by default' do
-      expect(subject.on_journey?).to eq(nil)
-    end
-  end
 
   describe '#start_journey' do
-    it 'Sets status to true when journey starts' do
-      subject.start_journey(station)
-      expect(subject.on_journey?).to eq(true)
-    end
-
     it 'Adds entry station name' do
       subject.start_journey(station)
       expect(subject.entry_station).to eq :name
@@ -22,12 +12,6 @@ describe Journey do
   end
 
   describe '#end_journey' do
-    it 'Sets status to false when journey ends' do
-      subject.start_journey(station)
-      subject.end_journey(station)
-      expect(subject.on_journey?).to eq(false)
-    end
-
     it 'Charges minimum fare for journey' do
       subject.start_journey(station)
       subject.end_journey(station)
@@ -50,6 +34,28 @@ describe Journey do
           2.times { subject.start_journey(station) }
           expect(subject.fare).to eq (Journey::PENALTY_FARE)
         end
+      end
+    end
+
+    describe '#complete?' do
+      it 'shows not complete on initialize?' do
+        expect(subject).to_not be_complete
+      end
+
+      it 'shows not complete after start journey' do
+        subject.start_journey(station)
+        expect(subject).to_not be_complete
+      end
+
+      it 'shows not complete after end_journey' do
+        subject.end_journey(station)
+        expect(subject).to_not be_complete
+      end
+
+      it 'shows complete after start and end journey' do
+        subject.start_journey(station)
+        subject.end_journey(station)
+        expect(subject).to be_complete
       end
     end
 end
