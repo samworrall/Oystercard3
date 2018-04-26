@@ -3,8 +3,8 @@ require 'oystercard.rb'
 describe Oystercard do
   let(:station) { double "Station" }
   let(:station_2) { double "Station_2" }
-  let(:journey) { double "journey", start_journey: nil, end_journey: nil, on_journey?: var }
-  let(:var) { false }
+  let(:journey) { double "journey", start_journey: nil, end_journey: nil,
+     entry_station: station, exit_station: station, fare: 6 }
   subject { Oystercard.new(journey) }
 
   it 'Has an initial balance of 0 check' do
@@ -24,28 +24,6 @@ describe Oystercard do
     end
   end
 
-  describe '#in_journey' do
-    it 'Returns false' do
-      expect(subject).not_to be_in_journey
-    end
-
-    it 'Sets in_journey to false when touching out' do
-      subject.top_up(Oystercard::MINIMUM_FARE)
-      subject.touch_in(station)
-      subject.touch_out(station_2)
-      expect(subject).not_to be_in_journey
-    end
-  end
-
-    context 'Whilst on a journey' do
-      let(:var) { true }
-      it 'Sets in_journey to true when touching in' do
-        subject.top_up(Oystercard::MINIMUM_FARE)
-        subject.touch_in(station)
-        expect(subject).to be_in_journey
-      end
-    end
-
   describe '#touch_in', :ti do
     it 'Raises an error when balance is less than £1' do
       expect { subject.touch_in(station) }.to raise_error("Insufficient funds")
@@ -64,24 +42,19 @@ describe Oystercard do
     end
   end
 
-  describe '#touch_out' do
+  describe '#touch_out', :touch_out do
     before { subject.top_up(Oystercard::MINIMUM_FARE) }
     it 'Deducts minimum fare from balance upon touching out' do
       subject.touch_in(station)
       expect { subject.touch_out(station_2) }.to change { subject.balance }.by -Oystercard::MINIMUM_FARE
     end
 
-    it 'Sets station attribute to nil' do
+    it 'Adds journey to the journey log' do
       subject.touch_in(station)
-      subject.touch_out(station_2)
-      expect(subject.station).to eq nil
+      subject.touch_out(station)
+      expect(subject.journey_log).to eq [{:entry_station => station, :exit_station => station}]
     end
 
-    it 'Records touch out station' do
-      subject.touch_in(station)
-      subject.touch_out(station_2)
-      expect(subject.station_2).to eq station_2
-    end
   end
 
   describe '#journey log' do
@@ -106,7 +79,7 @@ describe Oystercard do
 
   describe '#current_journey' do
     it 'Returns current journey' do
-      expect(subject.current_journey).to eq journey
+      expect(subject.journey).to eq journey
     end
   end
 end
