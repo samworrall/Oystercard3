@@ -1,11 +1,11 @@
 require 'oystercard.rb'
 
 describe Oystercard do
-  let(:station) { double "Station" }
-  let(:station_2) { double "Station_2" }
-  let(:journey) { double "journey", start_journey: nil, end_journey: nil,
-     entry_station: station, exit_station: station, fare: 6 }
-  subject { Oystercard.new(journey) }
+  let(:station) { double "Station", name: :name, zone: 1}
+  let(:station_2) { double "Station_2", name: :name, zone: 1}
+  # let(:journey) { double "journey", start_journey: nil, end_journey: nil,
+  #    entry_station: station, exit_station: station, fare: 6 }
+  # subject { Oystercard.new(journey) }
 
   it 'Has an initial balance of 0 check' do
     expect(subject.balance).to eq 0
@@ -29,12 +29,6 @@ describe Oystercard do
       expect { subject.touch_in(station) }.to raise_error("Insufficient funds")
     end
 
-    xit 'Stores the value of the station where you touch in' do
-      subject.top_up(Oystercard::MINIMUM_FARE)
-      subject.touch_in(station)
-      expect(subject.station).to eq station
-    end
-
     it 'Deducts penalty fare if touching in twice' do
       subject.top_up(Oystercard::MAXIMUM_BALANCE)
       subject.touch_in(station)
@@ -52,7 +46,7 @@ describe Oystercard do
     it 'Adds journey to the journey log' do
       subject.touch_in(station)
       subject.touch_out(station)
-      expect(subject.journey_log).to eq [{:entry_station => station, :exit_station => station}]
+      expect(subject.journey_log).to eq [{:entry_station => :name, :exit_station => :name}]
     end
 
   end
@@ -67,19 +61,13 @@ describe Oystercard do
     it 'Stores a list of completed journeys' do
       subject.touch_in(station)
       subject.touch_out(station_2)
-      expect(subject.journey_log[0][station]).to eq station_2
+      expect(subject.journey_log).to eq [:entry_station => :name, :exit_station => :name]
     end
 
     it 'checks that touching in and out once creates (only) one journey' do
       subject.touch_in(station)
       subject.touch_out(station_2)
       expect(subject.journey_log[1]).to be_nil
-    end
-  end
-
-  describe '#current_journey' do
-    it 'Returns current journey' do
-      expect(subject.journey).to eq journey
     end
   end
 end
