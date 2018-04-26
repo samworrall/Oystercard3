@@ -34,6 +34,8 @@ describe Oystercard do
       subject.touch_in(station)
       expect { subject.touch_in(station) }.to change { subject.balance }.by -6
     end
+
+
   end
 
   describe '#touch_out', :touch_out do
@@ -62,6 +64,11 @@ describe Oystercard do
       subject.touch_in(station)
       subject.touch_out(station_2)
       expect(subject.journey_log).to eq [:entry_station => :name, :exit_station => :name]
+    end
+
+    it 'creates a log entry on touch in twice' do
+      2.times { subject.touch_in(station) }
+      expect(subject.journey_log.length).to eq(1)
     end
 
     it 'checks that touching in and out once creates (only) one journey' do

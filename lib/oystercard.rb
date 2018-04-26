@@ -1,3 +1,5 @@
+require_relative 'journey.rb'
+
 class Oystercard
   attr_reader :balance, :journey_log, :journey
   MAXIMUM_BALANCE = 90
@@ -19,15 +21,16 @@ class Oystercard
     if @journey.entry_station != nil
       deduct(@journey.fare)
       @journey_log << ({:entry_station => @journey.entry_station, :exit_station => @journey.exit_station})
+      journey = Journey.new
     end
     @journey.start_journey(station)
   end
 
   def touch_out(station)
-    deduct(MINIMUM_FARE)
     @journey.end_journey(station)
+    deduct(@journey.fare)
     @journey_log << ({:entry_station => @journey.entry_station, :exit_station => @journey.exit_station})
-    @station = nil
+    journey = Journey.new
   end
 
   private
